@@ -100,11 +100,30 @@ resource "aws_lb_target_group" "wordpress" {
   }
 }
 
-# ALB Listener
-resource "aws_lb_listener" "wordpress" {
+# ALB HTTP Listener (Redirect to HTTPS)
+resource "aws_lb_listener" "http" {
   load_balancer_arn = aws_lb.wordpress.arn
   port              = "80"
   protocol          = "HTTP"
+
+  default_action {
+    type = "redirect"
+
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+}
+
+# ALB HTTPS Listener
+resource "aws_lb_listener" "https" {
+  load_balancer_arn = aws_lb.wordpress.arn
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = "arn:aws:acm:ap-south-1:935686097307:certificate/f39b6a50-bad1-42c8-92ff-0a2a404f973c"
 
   default_action {
     type             = "forward"
