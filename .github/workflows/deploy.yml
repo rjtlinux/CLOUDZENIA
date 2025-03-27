@@ -40,7 +40,7 @@ jobs:
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: nodejs/task-definition.json
-          container-name: my-container
+          container-name: hello-microservice
           image: ${{ steps.login-ecr.outputs.registry }}/hello-microservice:latest
 
       - name: Deploy to ECS
